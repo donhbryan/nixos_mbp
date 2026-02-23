@@ -8,6 +8,7 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      <home-manager/nixos>
     ];
 
   # Bootloader.
@@ -236,8 +237,18 @@ environment.systemPackages = with pkgs; [
       echo "🎉 Done!"
     '')
   ];
-
-
+    #  Fan Control
+    services.mbpfan = {
+          enable = true;
+          settings = {
+            general = {
+              low_temp = 58;   # Temperature to start increasing fan speed
+              high_temp = 63;  # Temperature where fan speed increases more aggressively
+              max_temp = 70;   # Temperature where fans hit maximum speed
+              # You can also specify min_fan_speed and max_fan_speed if you know your hardware limits
+            };
+          };
+        };
 
   fonts.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
@@ -321,7 +332,7 @@ environment.systemPackages = with pkgs; [
       # Run this entirely as your user so it has access to your SSH keys
       User = "don";
       # The command to run (Update the folder path and GitHub URL!)
-      ExecStart = "/run/current-system/sw/bin/github-save /home/don/nixos_mbp git@github.com:don/nixos_mbp.git 'Daily automated backup'";
+      ExecStart = "/run/current-system/sw/bin/github-save /etc/nixos git@github.com:donhbryan/nixos_mbp.git 'Daily automated backup'";
     };
   };
 
@@ -348,4 +359,41 @@ environment.systemPackages = with pkgs; [
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "25.11"; # Did you read the comment?
 
+  # ==========================================
+  # HOME MANAGER (USER STATE)
+  # ==========================================
+  home-manager.users.don = { pkgs, ... }: {
+    # This must match your system.stateVersion at the bottom of the file
+    home.stateVersion = "25.11"; 
+    
+    # Let Home Manager install and manage itself
+    programs.home-manager.enable = true;
+
+    # EXAMPLE: Hardcode XFCE to always use the Dark Theme
+    xfconf.settings = {
+	  # The Channel
+      xsettings = {
+		# The Property = The Value
+        "Net/ThemeName" = "Adwaita-dark";
+        "Net/IconThemeName" = "Papirus-Dark";
+      };
+      thunar = {
+		"/last-details-view-column-order" = "THUNAR_COLUMN_NAME,THUNAR_COLUMN_SIZE,THUNAR_COLUMN_SIZE_IN_BYTES,THUNAR_COLUMN_TYPE,THUNAR_COLUMN_DATE_MODIFIED,THUNAR_COLUMN_OWNER,THUNAR_COLUMN_LOCATION,THUNAR_COLUMN_GROUP,THUNAR_COLUMN_MIME_TYPE,THUNAR_COLUMN_DATE_CREATED,THUNAR_COLUMN_PERMISSIONS,THUNAR_COLUMN_DATE_ACCESSED,THUNAR_COLUMN_RECENCY,THUNAR_COLUMN_DATE_DELETED";
+		"/last-details-view-column-widths" = "50,50,137,129,92,94,50,50,162,189,50,65,50,373";
+		"/last-details-view-visible-columns" = "THUNAR_COLUMN_DATE_MODIFIED,THUNAR_COLUMN_NAME,THUNAR_COLUMN_OWNER,THUNAR_COLUMN_SIZE,THUNAR_COLUMN_TYPE";
+		"/last-details-view-zoom-level" = "THUNAR_ZOOM_LEVEL_38_PERCENT";
+		"/last-icon-view-zoom-level" = "THUNAR_ZOOM_LEVEL_100_PERCENT";
+		"/last-location-bar" = "ThunarLocationEntry";
+		"/last-menubar-visible" = "true";
+		"/last-separator-position" = "170";
+        "/last-show-hidden" = "true";
+        "/last-side-pane" = "THUNAR_SIDEPANE_TYPE_TREE";
+        "/last-sort-order" = "GTK_SORT_ASCENDING";
+        "/last-view" = "ThunarDetailsView";
+        "/misc-folder-item-count" = "THUNAR_FOLDER_ITEM_COUNT_ONLY_LOCAL";
+		"/last-window-width" = "950";
+        "/last-window-height" = "395";
+	  };
+    };
+  };
 }
