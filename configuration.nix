@@ -176,7 +176,9 @@
   
   #  Initialize oh-my-posh in your shell and point it to a built-in theme
   programs.bash.interactiveShellInit = ''
-    eval "$(oh-my-posh init bash --config ${pkgs.oh-my-posh}/share/oh-my-posh/themes/jandedobbeleer.omp.json)"
+    # eval "$(oh-my-posh init bash --config ${pkgs.oh-my-posh}/share/oh-my-posh/themes/jandedobbeleer.omp.json)"
+	
+	eval "$(oh-my-posh init bash --config /home/don/.config/oh-my-posh/wopian.omp.json)"
 
     # zoxide For Bash
     eval "$(zoxide init  --cmd cd bash)"
