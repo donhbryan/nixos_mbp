@@ -173,7 +173,31 @@
 
   # Install firefox.
   programs.firefox.enable = true;
-
+  
+  #  Initialize oh-my-posh in your shell and point it to a built-in theme
+  programs.bash.interactiveShellInit = ''
+    eval "$(oh-my-posh init bash --config ${pkgs.oh-my-posh}/share/oh-my-posh/themes/jandedobbeleer.omp.json)"
+    ''; 
+  # zoxide For Bash
+   programs.bash.interactiveShellInit = ''
+        eval "$(zoxide init  --cmd cd bash)"
+        '';       
+ 
+  # System-wide Git configuration
+  programs.git = {
+    enable = true;
+    config = {
+		  user = {
+			name = "donhbryan";
+			email = "don.h.bryan@gmail.com";
+		  };
+		  init = {
+			defaultBranch = "main";
+	      };
+      };
+  };
+   
+    
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
@@ -266,12 +290,7 @@ environment.systemPackages = with pkgs; [
     '')
   ];
   
-  # For Bash
-    programs.bash.interactiveShellInit = ''
-        eval "$(zoxide init bash)"
-        '';
-        
-        
+       
     #  Fan Control
     services.mbpfan = {
           enable = true;
@@ -287,6 +306,8 @@ environment.systemPackages = with pkgs; [
 
   fonts.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
+    nerd-fonts.fira-code
+    nerd-fonts.meslo-lg
   ];
   
   #nix.settings.experimental-features = [ "nix-commands" "flakes" ];
@@ -337,20 +358,6 @@ environment.systemPackages = with pkgs; [
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
 
-# System-wide Git configuration
-  programs.git = {
-    enable = true;
-    config = {
-      user = {
-        name = "donhbryan";
-        email = "don.h.bryan@gmail.com";
-      };
-      init = {
-        defaultBranch = "main";
-      };
-    };
-  };
-  
   # ==========================================
   # AUTOMATED GITHUB BACKUP TIMER
   # ==========================================
