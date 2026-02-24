@@ -135,10 +135,6 @@
     variant = "";
   };
 
-
- 
-
-
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
@@ -187,7 +183,28 @@
 environment.systemPackages = with pkgs; [
     geany
     alacritty
+    trilium-desktop
+    nomachine-client
+    autokey
+    eza
+    brave
     btop
+    bitwarden-desktop
+    rclone
+    rclone-browser
+    vscode-fhs
+    zoxide
+    oh-my-posh
+    multitail
+    trash-cli 
+    fzf 
+    bash-completion
+    libreoffice-qt-fresh
+    docker_25
+    conky
+    proton-pass
+    
+    
     # Your custom GitHub automation script
     (pkgs.writeShellScriptBin "github-save" ''
       TARGET_DIR="$1"
@@ -216,7 +233,17 @@ environment.systemPackages = with pkgs; [
           echo "✅ Git repository already initialized."
           FIRST_PUSH=false
       fi
+      
+      git add .
 
+      if [ -n "$(git status --porcelain)" ]; then
+          echo "📝 Committing changes..."
+          git commit -m "$COMMIT_MSG"
+      else
+          echo "🤷 No new files to commit, but checking for unpushed changes..."
+      fi
+
+      echo "🚀 Pushing to GitHub..."
       git add .
 
       if [ -n "$(git status --porcelain)" ]; then
@@ -331,6 +358,8 @@ environment.systemPackages = with pkgs; [
       Type = "oneshot";
       # Run this entirely as your user so it has access to your SSH keys
       User = "don";
+      # Add git (and ssh if using git@github.com) to the service's PATH
+      path = with pkgs; [ git openssh ];
       # The command to run (Update the folder path and GitHub URL!)
       ExecStart = "/run/current-system/sw/bin/github-save /etc/nixos git@github.com:donhbryan/nixos_mbp.git 'Daily automated backup'";
     };

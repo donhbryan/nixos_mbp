@@ -1,1 +1,30 @@
 # nixos_mbp
+installed:
+    git
+    wget
+    curl
+    tree
+
+    geany
+    alacritty
+    trilium-desktop
+    nomachine-client
+    autokey
+    eza
+    brave
+    btop
+    bitwarden-desktop
+    rclone
+    rclone-browser
+    vscode-fhs
+    zoxide
+    oh-my-posh
+    multitail
+    trash-cli 
+    fzf 
+    bash-completion
+    libreoffice-qt-fresh
+    docker_25
+    conky
+    proton-pass
+    tldr
