@@ -27,4 +27,4 @@ installed:
     docker_25
     conky
     proton-pass
-    tldr
+    tealdeer

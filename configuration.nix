@@ -203,6 +203,7 @@ environment.systemPackages = with pkgs; [
     docker_25
     conky
     proton-pass
+    tealdeer
     
     
     # Your custom GitHub automation script
@@ -264,6 +265,13 @@ environment.systemPackages = with pkgs; [
       echo "🎉 Done!"
     '')
   ];
+  
+  # For Bash
+    programs.bash.interactiveShellInit = ''
+        eval "$(zoxide init bash)"
+        '';
+        
+        
     #  Fan Control
     services.mbpfan = {
           enable = true;
