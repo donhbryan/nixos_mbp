@@ -177,10 +177,101 @@
   #  Initialize oh-my-posh in your shell and point it to a built-in theme
   programs.bash.interactiveShellInit = ''
     eval "$(oh-my-posh init bash --config ${pkgs.oh-my-posh}/share/oh-my-posh/themes/jandedobbeleer.omp.json)"
-    ''; 
-  # zoxide For Bash
-   programs.bash.interactiveShellInit = ''
-        eval "$(zoxide init  --cmd cd bash)"
+
+    # zoxide For Bash
+    eval "$(zoxide init  --cmd cd bash)"
+    
+    # Show all logs in /var/log
+    alias logs="sudo find /var/log -type f -exec file {} \; | grep 'text' | cut -d' ' -f1 | sed -e's/:$//g' | grep -v '[0-9]$' | xargs tail -f"
+ 
+ 
+    alias ls="eza -alhM --color=auto"
+    HISTTIMEFORMAT="%F %T "
+    alias nala="sudo nala"
+    alias systemctl="sudo systemctl"
+    alias apt="sudo apt"
+    alias docker='sudo docker'
+    alias mkdir='sudo mkdir -p'
+    alias ping='ping -c 4 -O -w 4'
+    alias lsblk='lsblk -o NAME,RM,RO,STATE,SIZE,FSUSE%,FSTYPE,TYPE,UUID,LABEL,PATH,MOUNTPOINTS'
+    
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    #alias dir='dir --color=auto'
+    #alias vdir='vdir --color=auto'
+    
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+    
+ 
+
+    # some more ls aliases
+    alias ll='eza -alF'
+    alias la='eza -A'
+    alias l='eza -CF'
+    
+    alias ls="eza -alhM --color=auto"
+    alias lf="eza -l | egrep -v '^d'"  # files only
+    alias ldir="eza -l | egrep '^d'"   # directories only
+    
+    # Search files in the current folder
+    alias f="find . | grep "
+    
+    # Count all files (recursively) in the current folder
+    alias countfiles="for t in files links directories; do echo \`find . -type \${t:0:1} | wc -l\` \$t; done 2> /dev/null"
+    
+    # To see if a command is aliased, a file, or a built-in command
+    alias checkcommand="type -t"
+    
+    # Alias's for safe and forced reboots
+    alias rebootsafe='sudo shutdown -r now'
+    alias rebootforce='sudo shutdown -r -n now'
+    
+    # Show all logs in /var/log
+    alias logs="sudo find /var/log -type f -exec file {} \; | grep 'text' | cut -d' ' -f1 | sed -e's/:$//g' | grep -v '[0-9]$' | xargs tail -f"
+    
+    # Alias's to show disk space and space used in a folder
+    alias diskspace="du -S | sort -n -r |more"
+    alias folders='du -h --max-depth=1'
+    alias folderssort='find . -maxdepth 1 -type d -print0 | xargs -0 du -sk | sort -rn'
+    alias tree='tree -CAhF --dirsfirst'
+    alias treed='tree -CAFd'
+    alias mountedinfo='df -hT'
+    
+ 
+    
+    # Alias's to show disk space and space used in a folder
+    alias diskspace="du -S | sort -n -r |more"
+    alias folders='du -h --max-depth=1'
+    alias folderssort='find . -maxdepth 1 -type d -print0 | xargs -0 du -sk | sort -rn'
+    alias tree='tree -CAhF --dirsfirst'
+    alias treed='tree -CAFd'
+    alias mountedinfo='df -hT'
+    
+    # alias nala="sudo nala"
+    alias systemctl="sudo systemctl"
+    # alias apt="sudo apt"
+    alias docker='sudo docker'
+    alias lsblk='lsblk -o NAME,RM,RO,STATE,SIZE,FSUSE%,FSTYPE,TYPE,UUID,LABEL,PATH,MOUNTPOINTS'
+    alias mkdir='sudo mkdir -p'
+    alias ping='ping -c 4 -O -w 4'
+    alias nano='sudo nano'
+    alias cp='cp -i'
+    alias mv='mv -i'
+    alias clr='clear'
+    
+    alias cd..='cd ..'
+    alias ..='cd ..'
+    alias ...='cd ../..'
+    alias ....='cd ../../..'
+    alias .....='cd ../../../..'
+    alias home='cd ~'
+    
+    # Remove a directory and all files
+    alias rmd='rm  --recursive --force --verbose '
+    alias fetch='cat /etc/motd'
+
         '';       
  
   # System-wide Git configuration
