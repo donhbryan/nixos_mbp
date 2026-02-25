@@ -166,7 +166,7 @@
   users.users.don = {
     isNormalUser = true;
     description = "don";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" ];
     packages = with pkgs; [
     #  thunderbird
     ];
@@ -187,12 +187,12 @@
   };
   environment.systemPackages = with pkgs; [
     # --- System Utilities ---
-    alacritty
     autokey
     bash-completion
     bitwarden-desktop
     brave
     btop
+    cifs-utils # Allows mounting of SMB/CIFS network shares
     conky
     curl
     eza
@@ -218,7 +218,7 @@
     vlc
 
     # --- Development & Music Project ---
-    docker_25
+    #docker_25
     vscode-fhs
     sqlite
     postgresql  # CLI tools for your DB
@@ -292,8 +292,8 @@
           enable = true;
           settings = {
             general = {
-              low_temp = 58;   # Temperature to start increasing fan speed
-              high_temp = 63;  # Temperature where fan speed increases more aggressively
+              low_temp = 61;   # Temperature to start increasing fan speed
+              high_temp = 66;  # Temperature where fan speed increases more aggressively
               max_temp = 70;   # Temperature where fans hit maximum speed
               # You can also specify min_fan_speed and max_fan_speed if you know your hardware limits
             };
@@ -386,6 +386,8 @@
     };
   };
 
+  # Enable the Docker daemon
+    virtualisation.docker.enable = true;
 
 
 
@@ -397,7 +399,31 @@
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "25.11"; # Did you read the comment?
 
-# ==========================================
+  # ==========================================
+  # NETWORK DISCOVERY (PRINTERS & SHARES)
+  # ==========================================
+
+  # 1. Enable Avahi (mDNS/DNS-SD) for discovering network printers
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+    openFirewall = true;
+  };
+
+  # 2. Enable Samba discovery for finding network shares
+  services.samba = {
+    enable = true;
+    openFirewall = true;
+  };
+
+  # 3. Enable WSDD (Web Services Dynamic Discovery)
+  # This helps discover modern Windows/Linux shares that disabled older SMBv1
+  services.samba-wsdd = {
+    enable = true;
+    openFirewall = true;
+  };
+
+ # ==========================================
   # HOME MANAGER (USER STATE)
   # ==========================================
   home-manager.users.don = { pkgs, ... }: {
@@ -542,5 +568,4 @@
     dates = "weekly";
     options = "--delete-older-than 14d";
   };
-
 } # <--- Final closing brace for the whole file

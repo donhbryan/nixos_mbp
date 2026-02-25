@@ -2,12 +2,12 @@
 installed:
 
     # --- System Utilities ---
-    alacritty
     autokey
     bash-completion
     bitwarden-desktop
     brave
     btop
+    cifs-utils # Allows mounting of SMB/CIFS network shares
     conky
     curl
     eza
@@ -33,7 +33,7 @@ installed:
     vlc
 
     # --- Development & Music Project ---
-    docker_25
+    #docker_25
     vscode-fhs
     sqlite
     postgresql  # CLI tools for your DB
@@ -48,5 +48,3 @@ installed:
       pyacoustid
       requests
       psycopg2 # PostgreSQL adapter
-    ]))
-
