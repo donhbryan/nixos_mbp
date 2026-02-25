@@ -1,3 +1,4 @@
+
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
@@ -125,10 +126,14 @@
   };
   # services.displayManager.ly.enable = true;
 
-  # Enable the XFCE Desktop Environment.
+  # Enable the XFCE and Plasma Desktop Environment.
   services.xserver.displayManager.lightdm.enable = true;
   services.xserver.desktopManager.xfce.enable = true;
-
+  
+  services.desktopManager.plasma6 = {
+	  enable = true;
+	};
+	
   # Configure keymap in X11
   services.xserver.xkb = {
     layout = "us";
@@ -163,168 +168,54 @@
     description = "don";
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
-    git
-    wget
-    curl
-    tree
     #  thunderbird
     ];
   };
 
   # Install firefox.
   programs.firefox.enable = true;
-  
-  #  Initialize oh-my-posh in your shell and point it to a built-in theme
-  programs.bash.interactiveShellInit = ''
-    # eval "$(oh-my-posh init bash --config ${pkgs.oh-my-posh}/share/oh-my-posh/themes/jandedobbeleer.omp.json)"
-	
-	eval "$(oh-my-posh init bash --config /home/don/.config/oh-my-posh/wopian.omp.json)"
-
-    # zoxide For Bash
-    eval "$(zoxide init  --cmd cd bash)"
-    
-    # Show all logs in /var/log
-    alias logs="sudo find /var/log -type f -exec file {} \; | grep 'text' | cut -d' ' -f1 | sed -e's/:$//g' | grep -v '[0-9]$' | xargs tail -f"
- 
-	alias nix='sudo nixos-rebuild switch'
-    alias ls="eza -alhM --color=auto"
-    HISTTIMEFORMAT="%F %T "
-    alias nala="sudo nala"
-    alias systemctl="sudo systemctl"
-    alias apt="sudo apt"
-    alias docker='sudo docker'
-    alias mkdir='sudo mkdir -p'
-    alias ping='ping -c 4 -O -w 4'
-    alias lsblk='lsblk -o NAME,RM,RO,STATE,SIZE,FSUSE%,FSTYPE,TYPE,UUID,LABEL,PATH,MOUNTPOINTS'
-    
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
-    #alias dir='dir --color=auto'
-    #alias vdir='vdir --color=auto'
-    
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
-    
- 
-
-    # some more ls aliases
-    alias ll='eza -alF'
-    alias la='eza -A'
-    alias l='eza -CF'
-    
-    alias ls="eza -alhM --color=auto"
-    alias lf="eza -l | egrep -v '^d'"  # files only
-    alias ldir="eza -l | egrep '^d'"   # directories only
-    
-    # Search files in the current folder
-    alias f="find . | grep "
-    
-    # Count all files (recursively) in the current folder
-    alias countfiles="for t in files links directories; do echo \`find . -type \${t:0:1} | wc -l\` \$t; done 2> /dev/null"
-    
-    # To see if a command is aliased, a file, or a built-in command
-    alias checkcommand="type -t"
-    
-    # Alias's for safe and forced reboots
-    alias rebootsafe='sudo shutdown -r now'
-    alias rebootforce='sudo shutdown -r -n now'
-    
-    # Show all logs in /var/log
-    alias logs="sudo find /var/log -type f -exec file {} \; | grep 'text' | cut -d' ' -f1 | sed -e's/:$//g' | grep -v '[0-9]$' | xargs tail -f"
-    
-    # Alias's to show disk space and space used in a folder
-    alias diskspace="du -S | sort -n -r |more"
-    alias folders='du -h --max-depth=1'
-    alias folderssort='find . -maxdepth 1 -type d -print0 | xargs -0 du -sk | sort -rn'
-    alias tree='tree -CAhF --dirsfirst'
-    alias treed='tree -CAFd'
-    alias mountedinfo='df -hT'
-    
- 
-    
-    # Alias's to show disk space and space used in a folder
-    alias diskspace="du -S | sort -n -r |more"
-    alias folders='du -h --max-depth=1'
-    alias folderssort='find . -maxdepth 1 -type d -print0 | xargs -0 du -sk | sort -rn'
-    alias tree='tree -CAhF --dirsfirst'
-    alias treed='tree -CAFd'
-    alias mountedinfo='df -hT'
-    
-    # alias nala="sudo nala"
-    alias systemctl="sudo systemctl"
-    # alias apt="sudo apt"
-    alias docker='sudo docker'
-    alias lsblk='lsblk -o NAME,RM,RO,STATE,SIZE,FSUSE%,FSTYPE,TYPE,UUID,LABEL,PATH,MOUNTPOINTS'
-    alias mkdir='sudo mkdir -p'
-    alias ping='ping -c 4 -O -w 4'
-    alias nano='sudo nano'
-    alias cp='cp -i'
-    alias mv='mv -i'
-    alias clr='clear'
-    
-    alias cd..='cd ..'
-    alias ..='cd ..'
-    alias ...='cd ../..'
-    alias ....='cd ../../..'
-    alias .....='cd ../../../..'
-    alias home='cd ~'
-    
-    # Remove a directory and all files
-    alias rmd='rm  --recursive --force --verbose '
-    alias fetch='cat /etc/motd'
-
-        '';       
- 
-  # System-wide Git configuration
-  programs.git = {
-    enable = true;
-    config = {
-		  user = {
-			name = "donhbryan";
-			email = "don.h.bryan@gmail.com";
-		  };
-		  init = {
-			defaultBranch = "main";
-	      };
-      };
-  };
    
-    
-  # Allow unfree packages
+  # Allow unfree packages  (required for the Broadcom driver)
   nixpkgs.config.allowUnfree = true;
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
 
 environment.systemPackages = with pkgs; [
-    geany
     alacritty
-    trilium-desktop
-    nomachine-client
     autokey
-    eza
+    bash-completion
+    bitwarden-desktop
     brave
     btop
-    bitwarden-desktop
+    conky
+    curl
+    docker_25
+    eza
+    fzf 
+    geany
+    git
+    libreoffice-qt-fresh
+    multitail
+    nomachine-client
+    oh-my-posh
+    pommed_light
+    proton-pass
     rclone
     rclone-browser
-    vscode-fhs
-    zoxide
-    oh-my-posh
-    multitail
-    trash-cli 
-    fzf 
-    bash-completion
-    libreoffice-qt-fresh
-    docker_25
-    conky
-    proton-pass
     tealdeer
-    
+    trash-cli 
+    tree
+    trilium-desktop
+    vscode-fhs
+    wget
+    zoxide
+
+
     
     # Your custom GitHub automation script
     (pkgs.writeShellScriptBin "github-save" ''
+      set -e  	#exit on any  failure
       TARGET_DIR="$1"
       GITHUB_REPO="$2"
       COMMIT_MSG="''${3:-Automated update}" 
@@ -406,8 +297,7 @@ environment.systemPackages = with pkgs; [
   #nix.settings.experimental-features = [ "nix-commands" "flakes" ];
   
   # 1. Allow proprietary software (required for the Broadcom driver)
-  #  nixpkgs.config.allowUnfree = true;
-
+  
   # 2. Enable proprietary firmware for hardware like Wi-Fi cards
   hardware.enableRedistributableFirmware = true;
 
@@ -443,7 +333,7 @@ environment.systemPackages = with pkgs; [
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
+    services.openssh.enable = true;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
@@ -457,7 +347,7 @@ environment.systemPackages = with pkgs; [
   
   # 1. Define the actual backup task
   systemd.services.github-save-daily = {
-    description = "Daily GitHub Backup";
+    description = "Daily GitHub Backup of Configuration.nix";
     # Don't try to run if the Wi-Fi is disconnected
     after = [ "network-online.target" ];
     wants = [ "network-online.target" ];
@@ -496,25 +386,107 @@ environment.systemPackages = with pkgs; [
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "25.11"; # Did you read the comment?
 
-  # ==========================================
+# ==========================================
   # HOME MANAGER (USER STATE)
   # ==========================================
   home-manager.users.don = { pkgs, ... }: {
-    # This must match your system.stateVersion at the bottom of the file
     home.stateVersion = "25.11"; 
     
+    # FIX: This tells Home Manager to backup files instead of failing if they exist
+    #home.file.".bashrc".source = config.lib.file.mkOutOfStoreSymlink ./.bashrc; # or simply:
+    programs.bash.enable = true; 
+
     # Let Home Manager install and manage itself
     programs.home-manager.enable = true;
 
-    # EXAMPLE: Hardcode XFCE to always use the Dark Theme
+    # 1. GIT CONFIGURATION
+    programs.git = {
+      enable = true;
+		settings = {
+        init.defaultBranch = "main";
+		user.name = "donhbryan";
+		user.email = "don.h.bryan@gmail.com";
+      };
+    };
+
+    # 2. ZOXIDE (Auto-jump)
+    # Enabling this automatically adds the 'z' and 'zi' commands to bash
+    programs.zoxide = {
+      enable = true;
+      enableBashIntegration = true;
+    };
+
+    # 3. BASH CONFIGURATION
+    programs.bash = {
+      # enable = true;
+      enableCompletion = true;
+
+      # Aliases go here (cleaner than one long string)
+      shellAliases = {
+        # System
+        nix = "sudo nixos-rebuild switch";
+        update = "sudo nixos-rebuild switch";
+        rebootsafe = "sudo shutdown -r now";
+        rebootforce = "sudo shutdown -r -n now";
+        clr = "clear";
+        
+        # Tools
+        nano = "sudo nano";
+        docker = "sudo docker";
+        logs = "sudo find /var/log -type f -exec file {} \; | grep 'text' | cut -d' ' -f1 | sed -e's/:$//g' | grep -v '[0-9]$' | xargs tail -f";
+        systemctl = "sudo systemctl";
+        
+        # Filesystem
+        ".." = "cd ..";
+        "..." = "cd ../..";
+        "cd.." = "cd ..";
+        mkdir = "sudo mkdir -p";
+        cp = "cp -i";
+        mv = "mv -i";
+        rmd = "rm --recursive --force --verbose";
+        
+        # Eza (LS replacement) replacements
+        ls = "eza -alhM --color=auto";
+        ll = "eza -alF";
+        la = "eza -A";
+        l = "eza -CF";
+        lf = "eza -l | egrep -v '^d'";
+        ldir = "eza -l | egrep '^d'";
+        tree = "tree -CAhF --dirsfirst";
+        
+        # Hardware / Info
+        ping = "ping -c 4 -O -w 4";
+        lsblk = "lsblk -o NAME,RM,RO,STATE,SIZE,FSUSE%,FSTYPE,TYPE,UUID,LABEL,PATH,MOUNTPOINTS";
+        diskspace = "du -S | sort -n -r |more";
+        folders = "du -h --max-depth=1";
+        mountedinfo = "df -hT";
+      };
+
+      # Custom Init (Oh-My-Posh & complex functions)
+      initExtra = ''
+        # Initialize Oh-My-Posh with your specific config file
+        eval "$(oh-my-posh init bash --config /home/don/.config/oh-my-posh/wopian.omp.json)"
+
+        # Custom Function: Count files
+        countfiles() {
+          for t in files links directories; do 
+            echo `find . -type ${t:0:1} | wc -l` $t; 
+          done 2> /dev/null
+        }
+
+        # Dircolors
+        test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+      '';
+    };
+
+    # 4. XFCE THEME SETTINGS (As you had them)
     xfconf.settings = {
-	  # The Channel
       xsettings = {
-		# The Property = The Value
         "Net/ThemeName" = "Adwaita-dark";
         "Net/IconThemeName" = "Papirus-Dark";
       };
       thunar = {
+        "/last-view" = "ThunarDetailsView";
 		"/last-details-view-column-order" = "THUNAR_COLUMN_NAME,THUNAR_COLUMN_SIZE,THUNAR_COLUMN_SIZE_IN_BYTES,THUNAR_COLUMN_TYPE,THUNAR_COLUMN_DATE_MODIFIED,THUNAR_COLUMN_OWNER,THUNAR_COLUMN_LOCATION,THUNAR_COLUMN_GROUP,THUNAR_COLUMN_MIME_TYPE,THUNAR_COLUMN_DATE_CREATED,THUNAR_COLUMN_PERMISSIONS,THUNAR_COLUMN_DATE_ACCESSED,THUNAR_COLUMN_RECENCY,THUNAR_COLUMN_DATE_DELETED";
 		"/last-details-view-column-widths" = "50,50,137,129,92,94,50,50,162,189,50,65,50,373";
 		"/last-details-view-visible-columns" = "THUNAR_COLUMN_DATE_MODIFIED,THUNAR_COLUMN_NAME,THUNAR_COLUMN_OWNER,THUNAR_COLUMN_SIZE,THUNAR_COLUMN_TYPE";
@@ -526,11 +498,53 @@ environment.systemPackages = with pkgs; [
         "/last-show-hidden" = "true";
         "/last-side-pane" = "THUNAR_SIDEPANE_TYPE_TREE";
         "/last-sort-order" = "GTK_SORT_ASCENDING";
-        "/last-view" = "ThunarDetailsView";
         "/misc-folder-item-count" = "THUNAR_FOLDER_ITEM_COUNT_ONLY_LOCAL";
 		"/last-window-width" = "950";
         "/last-window-height" = "395";
-	  };
+      };
     };
   };
+
+
+
+#  # ==========================================
+#  # HOME MANAGER (USER STATE)
+#  # ==========================================
+#  home-manager.users.don = { pkgs, ... }: {
+#    # This must match your system.stateVersion at the bottom of the file
+#    home.stateVersion = "25.11"; 
+#    
+#    # Let Home Manager install and manage itself
+#    programs.home-manager.enable = true;
+# 
+#    home-manager.backupFileExtension = "backup";
+#
+#	# Configure git declaratively
+#    programs.git = {
+#      enable = true;
+#      userName = "donhbryan";
+#      userEmail = "don.h.bryan@google.com";
+#    };
+#      
+#	# Example: Custom shell aliases that work on ANY desktop
+#	programs.bash = {
+#	  enable = true;
+#	  shellAliases = {
+#		ll = "ls -l";
+#		update = "sudo nixos-rebuild switch";
+#	  };
+#	}; 
+#
+#    # EXAMPLE: Hardcode XFCE to always use the Dark Theme
+#    xfconf.settings = {
+#	  # The Channel
+#      xsettings = {
+#		# The Property = The Value
+#        "Net/ThemeName" = "Adwaita-dark";
+#        "Net/IconThemeName" = "Papirus-Dark";
+#      };
+#      thunar = {
+#	  };
+#    };
+#  };
 }
