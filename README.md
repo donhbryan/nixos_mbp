@@ -1,5 +1,6 @@
 # nixos_mbp
 installed:
+
     alacritty
     autokey
     bash-completion
@@ -29,3 +30,5 @@ installed:
     vscode-fhs
     wget
     zoxide
+
+    kdePackages.plasma-browser-integration
