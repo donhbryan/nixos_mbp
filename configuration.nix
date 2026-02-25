@@ -181,8 +181,12 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
 
-
-environment.systemPackages = with pkgs; [
+  # Link Plasma Browser Integration for Brave/Chrome
+  environment.etc = {
+      "opt/chrome/native-messaging-hosts/org.kde.plasma.browser_integration.json".source = "${pkgs.kdePackages.plasma-browser-integration}/etc/chromium/native-messaging-hosts/org.kde.plasma.browser_integration.json";
+  };
+  environment.systemPackages = with pkgs; [
+    # --- System Utilities ---
     alacritty
     autokey
     bash-completion
@@ -191,12 +195,9 @@ environment.systemPackages = with pkgs; [
     btop
     conky
     curl
-    docker_25
     eza
-    fzf 
-    geany
+    fzf
     git
-    libreoffice-qt-fresh
     multitail
     nomachine-client
     oh-my-posh
@@ -205,16 +206,36 @@ environment.systemPackages = with pkgs; [
     rclone
     rclone-browser
     tealdeer
-    trash-cli 
+    trash-cli
     tree
     trilium-desktop
-    vlc
-    vscode-fhs
     wget
     zoxide
-
     kdePackages.plasma-browser-integration
-    
+
+    # --- Media & GUI ---
+    libreoffice-qt-fresh
+    vlc
+
+    # --- Development & Music Project ---
+    docker_25
+    vscode-fhs
+    sqlite
+    postgresql  # CLI tools for your DB
+
+    # Audio processing tools required for AcoustID
+    ffmpeg
+    chromaprint # Provides 'fpcalc' needed by pyacoustid
+
+    # Python with your specific libraries pre-installed
+    (python3.withPackages (ps: with ps; [
+      mutagen
+      pyacoustid
+      requests
+      psycopg2 # PostgreSQL adapter
+    ]))
+
+
     # Your custom GitHub automation script
     (pkgs.writeShellScriptBin "github-save" ''
       set -e  	#exit on any  failure
@@ -343,27 +364,26 @@ environment.systemPackages = with pkgs; [
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
 
-  # ==========================================
+# ==========================================
   # AUTOMATED GITHUB BACKUP TIMER
   # ==========================================
-  
+
   # 1. Define the actual backup task
   systemd.services.github-save-daily = {
     description = "Daily GitHub Backup of Configuration.nix";
-    # Don't try to run if the Wi-Fi is disconnected
     after = [ "network-online.target" ];
     wants = [ "network-online.target" ];
-    
+
+    # FIX: 'path' must be at this level, outside of serviceConfig
+    path = with pkgs; [ git openssh ];
+
     serviceConfig = {
       Type = "oneshot";
-      # Run this entirely as your user so it has access to your SSH keys
       User = "don";
-      # Add git (and ssh if using git@github.com) to the service's PATH
-      path = with pkgs; [ git openssh ];
-      # The command to run (Update the folder path and GitHub URL!)
       ExecStart = "/run/current-system/sw/bin/github-save /etc/nixos git@github.com:donhbryan/nixos_mbp.git 'Daily automated backup'";
     };
   };
+
 
   # 2. Define the schedule
   systemd.timers.github-save-daily = {
@@ -505,48 +525,33 @@ environment.systemPackages = with pkgs; [
         "/last-window-height" = "395";
       };
     };
+
+
+    # Autostart AutoKey in the background
+        xdg.configFile."autostart/autokey.desktop".text = ''
+          [Desktop Entry]
+          Name=AutoKey
+          GenericName=Keyboard Automator
+          Comment=Program keyboard shortcuts
+          Exec=${pkgs.autokey}/bin/autokey-gtk
+          Terminal=false
+          Type=Application
+          Icon=autokey
+          Categories=Utility;
+          StartupNotify=false
+          X-KDE-autostart-after=panel
+        '';
+  }; # <--- THIS is the closing brace for home-manager.users.don. It must be AFTER the xdg block.
+  # ==========================================
+  # NIX PACKAGE MANAGEMENT & CLEANUP
+  # ==========================================
+  
+  # Optimize storage and perform garbage collection
+  nix.optimise.automatic = true;
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 14d";
   };
 
-
-
-#  # ==========================================
-#  # HOME MANAGER (USER STATE)
-#  # ==========================================
-#  home-manager.users.don = { pkgs, ... }: {
-#    # This must match your system.stateVersion at the bottom of the file
-#    home.stateVersion = "25.11"; 
-#    
-#    # Let Home Manager install and manage itself
-#    programs.home-manager.enable = true;
-# 
-#    home-manager.backupFileExtension = "backup";
-#
-#	# Configure git declaratively
-#    programs.git = {
-#      enable = true;
-#      userName = "donhbryan";
-#      userEmail = "don.h.bryan@google.com";
-#    };
-#      
-#	# Example: Custom shell aliases that work on ANY desktop
-#	programs.bash = {
-#	  enable = true;
-#	  shellAliases = {
-#		ll = "ls -l";
-#		update = "sudo nixos-rebuild switch";
-#	  };
-#	}; 
-#
-#    # EXAMPLE: Hardcode XFCE to always use the Dark Theme
-#    xfconf.settings = {
-#	  # The Channel
-#      xsettings = {
-#		# The Property = The Value
-#        "Net/ThemeName" = "Adwaita-dark";
-#        "Net/IconThemeName" = "Papirus-Dark";
-#      };
-#      thunar = {
-#	  };
-#    };
-#  };
-}
+} # <--- Final closing brace for the whole file
