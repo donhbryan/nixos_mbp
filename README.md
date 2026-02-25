@@ -1,6 +1,7 @@
 # nixos_mbp
 installed:
 
+    # --- System Utilities ---
     alacritty
     autokey
     bash-completion
@@ -9,12 +10,9 @@ installed:
     btop
     conky
     curl
-    docker_25
     eza
-    fzf 
-    geany
+    fzf
     git
-    libreoffice-qt-fresh
     multitail
     nomachine-client
     oh-my-posh
@@ -23,12 +21,32 @@ installed:
     rclone
     rclone-browser
     tealdeer
-    trash-cli 
+    trash-cli
     tree
     trilium-desktop
-    vlc
-    vscode-fhs
     wget
     zoxide
-
     kdePackages.plasma-browser-integration
+
+    # --- Media & GUI ---
+    libreoffice-qt-fresh
+    vlc
+
+    # --- Development & Music Project ---
+    docker_25
+    vscode-fhs
+    sqlite
+    postgresql  # CLI tools for your DB
+
+    # Audio processing tools required for AcoustID
+    ffmpeg
+    chromaprint # Provides 'fpcalc' needed by pyacoustid
+
+    # Python with your specific libraries pre-installed
+    (python3.withPackages (ps: with ps; [
+      mutagen
+      pyacoustid
+      requests
+      psycopg2 # PostgreSQL adapter
+    ]))
+
