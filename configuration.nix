@@ -181,6 +181,7 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
 
+
 environment.systemPackages = with pkgs; [
     alacritty
     autokey
@@ -207,11 +208,12 @@ environment.systemPackages = with pkgs; [
     trash-cli 
     tree
     trilium-desktop
+    vlc
     vscode-fhs
     wget
     zoxide
 
-
+    kdePackages.plasma-browser-integration
     
     # Your custom GitHub automation script
     (pkgs.writeShellScriptBin "github-save" ''

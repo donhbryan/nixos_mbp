@@ -25,6 +25,7 @@ installed:
     trash-cli 
     tree
     trilium-desktop
+    vlc
     vscode-fhs
     wget
     zoxide
