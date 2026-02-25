@@ -236,12 +236,12 @@
     ]))
 
 
-    # Your custom GitHub automation script
+# Your custom GitHub automation script
     (pkgs.writeShellScriptBin "github-save" ''
-      set -e  	#exit on any  failure
+      set -e    # exit on any failure
       TARGET_DIR="$1"
       GITHUB_REPO="$2"
-      COMMIT_MSG="''${3:-Automated update}" 
+      COMMIT_MSG="''${3:-Automated update}"
 
       if [ -z "$TARGET_DIR" ] || [ -z "$GITHUB_REPO" ]; then
           echo "Usage: github-save <directory_path> <github_repo_url> [\"commit message\"]"
@@ -265,25 +265,14 @@
           echo "✅ Git repository already initialized."
           FIRST_PUSH=false
       fi
-      
+
       git add .
 
       if [ -n "$(git status --porcelain)" ]; then
           echo "📝 Committing changes..."
           git commit -m "$COMMIT_MSG"
       else
-          echo "🤷 No new files to commit, but checking for unpushed changes..."
-      fi
-
-      echo "🚀 Pushing to GitHub..."
-      git add .
-
-      if [ -n "$(git status --porcelain)" ]; then
-          echo "📝 Committing changes..."
-          git commit -m "$COMMIT_MSG"
-      else
-          echo "🤷 No new changes to commit. Exiting."
-          exit 0
+          echo "🤷 No new files to commit. Checking for unpushed changes..."
       fi
 
       echo "🚀 Pushing to GitHub..."
