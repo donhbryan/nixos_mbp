@@ -1,7 +1,8 @@
 # nixos_mbp
 installed:
 
-    # --- System Utilities ---
+# --- System Utilities ---
+    age
     autokey
     bash-completion
     bitwarden-desktop
@@ -12,6 +13,7 @@ installed:
     curl
     eza
     fzf
+    geany
     git
     multitail
     nomachine-client
@@ -20,6 +22,9 @@ installed:
     proton-pass
     rclone
     rclone-browser
+    solaar
+    sops 
+    ssh-to-age
     tealdeer
     trash-cli
     tree
@@ -28,21 +33,21 @@ installed:
     zoxide
     kdePackages.plasma-browser-integration
 
-    # --- Media & GUI ---
+# --- Media & GUI ---
     libreoffice-qt-fresh
     vlc
 
-    # --- Development & Music Project ---
+# --- Development & Music Project ---
     #docker_25
     vscode-fhs
     sqlite
     postgresql  # CLI tools for your DB
 
-    # Audio processing tools required for AcoustID
+# Audio processing tools required for AcoustID
     ffmpeg
     chromaprint # Provides 'fpcalc' needed by pyacoustid
 
-    # Python with your specific libraries pre-installed
+# Python with your specific libraries pre-installed
     (python3.withPackages (ps: with ps; [
       mutagen
       pyacoustid
