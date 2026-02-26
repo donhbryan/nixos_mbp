@@ -2,24 +2,7 @@
 
 {
 
-  environment.systemPackages = with pkgs; [
-    # System Utilities
-    age autokey bash-completion bitwarden-desktop brave btop cifs-utils
-    conky curl eza fzf geany git multitail nomachine-client oh-my-posh
-    pommed_light proton-pass rclone rclone-browser solaar sops ssh-to-age
-    tealdeer trash-cli tree trilium-desktop wget zoxide
-    kdePackages.plasma-browser-integration
-
-    # Media & GUI
-    libreoffice-qt-fresh vlc
-
-    # Development & Audio Project
-    vscode-fhs sqlite postgresql ffmpeg chromaprint
-
-    # Python Environment
-    (python3.withPackages (ps: with ps; [
-      mutagen pyacoustid requests psycopg2
-    ]))
+  environment.systemPackages = [
 
     # Custom GitHub Automation Script
     (pkgs.writeShellScriptBin "github-save" ''

@@ -7,14 +7,15 @@
 
 {
   imports = [
-      ./hardware-configuration.nix
-      <home-manager/nixos>
-      <sops-nix/modules/sops>
-      ./home.nix          # <--- Imports your user config
-      ./github-save.nix   # <--- Imports your custom script
-      ./macbook.nix      # <--- Your new hardware module
-      ./desktop.nix       # <--- Your new desktop module
-    ];
+    ./hardware-configuration.nix
+    <home-manager/nixos>
+    <sops-nix/modules/sops>
+    ./home.nix          # Imports your user config
+    ./github-save.nix   # Imports your custom script
+    ./macbook.nix       # Your hardware module
+    ./desktop.nix       # Your desktop module
+  ];
+
   # ==========================================
   # 1. CORE SYSTEM & NIX SETTINGS
   # ==========================================
@@ -46,7 +47,6 @@
     "resume_offset=76064768"
   ];
 
-
   # Bluetooth
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = false;
@@ -57,10 +57,8 @@
     size = 16 * 1024; # 16 GB
   } ];
 
-
-
   # ==========================================
-  # 4. NETWORKING & TIME
+  # 3. NETWORKING & TIME
   # ==========================================
   networking.hostName = "mbp";
   networking.networkmanager.enable = true;
@@ -80,9 +78,8 @@
     LC_TIME = "en_US.UTF-8";
   };
 
-
   # ==========================================
-  # 6. SOPS SECRETS & FILESYSTEMS
+  # 4. SOPS SECRETS & FILESYSTEMS
   # ==========================================
   sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
   sops.defaultSopsFile = ./secrets/smb.yaml;
@@ -109,7 +106,7 @@
   };
 
   # ==========================================
-  # 7. SERVICES & DISCOVERY
+  # 5. SERVICES & DISCOVERY
   # ==========================================
   services.printing.enable = true;
   services.openssh.enable = true;
@@ -130,7 +127,7 @@
   };
 
   # ==========================================
-  # 8. USERS & SYSTEM PACKAGES
+  # 6. USERS & SYSTEM PACKAGES
   # ==========================================
   users.users.don = {
     isNormalUser = true;
@@ -144,8 +141,28 @@
     "opt/chrome/native-messaging-hosts/org.kde.plasma.browser_integration.json".source = "${pkgs.kdePackages.plasma-browser-integration}/etc/chromium/native-messaging-hosts/org.kde.plasma.browser_integration.json";
   };
 
+  environment.systemPackages = with pkgs; [
+    # System Utilities
+    age autokey bash-completion bitwarden-desktop brave btop cifs-utils
+    conky curl eza fzf geany git multitail nomachine-client oh-my-posh
+    pommed_light proton-pass rclone rclone-browser solaar sops ssh-to-age
+    tealdeer trash-cli tree trilium-desktop wget zoxide
+    kdePackages.plasma-browser-integration
+
+    # Media & GUI
+    libreoffice-qt-fresh vlc
+
+    # Development & Audio Project
+    vscode-fhs sqlite postgresql ffmpeg chromaprint
+
+    # Python Environment
+    (python3.withPackages (ps: with ps; [
+      mutagen pyacoustid requests psycopg2
+    ]))
+  ];
+
   # ==========================================
-  # 9. SYSTEM TIMERS
+  # 7. SYSTEM TIMERS
   # ==========================================
   systemd.services.github-save-daily = {
     description = "Daily GitHub Backup of Configuration.nix";
