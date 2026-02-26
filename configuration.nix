@@ -12,6 +12,8 @@
       <sops-nix/modules/sops>
       ./home.nix          # <--- Imports your user config
       ./github-save.nix   # <--- Imports your custom script
+      ./macbook.nix      # <--- Your new hardware module
+      ./desktop.nix       # <--- Your new desktop module
     ];
   # ==========================================
   # 1. CORE SYSTEM & NIX SETTINGS
@@ -44,10 +46,6 @@
     "resume_offset=76064768"
   ];
 
-  # Broadcom Wi-Fi Configuration
-  hardware.enableRedistributableFirmware = true;
-  boot.extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
-  boot.kernelModules = [ "wl" ];
 
   # Bluetooth
   hardware.bluetooth.enable = true;
@@ -59,55 +57,7 @@
     size = 16 * 1024; # 16 GB
   } ];
 
-  # ==========================================
-  # 3. MACBOOK POWER MANAGEMENT
-  # ==========================================
-  services.power-profiles-daemon.enable = false;
-  services.thermald.enable = true;
 
-  services.tlp = {
-    enable = true;
-    settings = {
-      CPU_SCALING_GOVERNOR_ON_AC = "performance";
-      CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
-      WIFI_PWR_ON_AC = "off";
-      WIFI_PWR_ON_BAT = "on";
-      USB_AUTOSUSPEND = 1;
-    };
-  };
-
-  services.mbpfan = {
-    enable = true;
-    settings.general = {
-      low_temp = 61;
-      high_temp = 66;
-      max_temp = 70;
-    };
-  };
-
-  services.logind.settings = {
-    Login = {
-      HandleLidSwitch = "hibernate";
-      HandleLidSwitchExternalPower = "hibernate";
-    };
-  };
-
-  systemd.services.disable-usb-wakeup = {
-    description = "Disable USB Wakeup Triggers";
-    wantedBy = [ "multi-user.target" ];
-    after = [ "network.target" ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-    };
-    script = ''
-      for dev in XHC1 EHC1 EHC2; do
-        if grep -qw "$dev.*enabled" /proc/acpi/wakeup; then
-          echo $dev > /proc/acpi/wakeup
-        fi
-      done
-    '';
-  };
 
   # ==========================================
   # 4. NETWORKING & TIME
@@ -130,43 +80,6 @@
     LC_TIME = "en_US.UTF-8";
   };
 
-  # ==========================================
-  # 5. DESKTOP ENVIRONMENT & AUDIO
-  # ==========================================
-  services.xserver = {
-    enable = true;
-    dpi = 90;
-    resolutions = [ { x = 1920; y = 1080; } ];
-    autoRepeatDelay = 200;
-    autoRepeatInterval = 35;
-    windowManager.qtile.enable = true;
-
-    displayManager.lightdm.enable = true;
-    desktopManager.xfce.enable = true;
-
-    xkb = {
-      layout = "us";
-      variant = "";
-    };
-  };
-
-  services.desktopManager.plasma6.enable = true;
-
-  # Audio (Pipewire)
-  services.pulseaudio.enable = false;
-  security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-  };
-
-  fonts.packages = with pkgs; [
-    nerd-fonts.jetbrains-mono
-    nerd-fonts.fira-code
-    nerd-fonts.meslo-lg
-  ];
 
   # ==========================================
   # 6. SOPS SECRETS & FILESYSTEMS
