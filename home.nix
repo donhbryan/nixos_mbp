@@ -55,7 +55,8 @@
         lsblk = "lsblk -o NAME,RM,RO,STATE,SIZE,FSUSE%,FSTYPE,TYPE,UUID,LABEL,PATH,MOUNTPOINTS";
         diskspace = "du -S | sort -n -r |more";
         folders = "du -h --max-depth=1";
-        mnt= "df -hT";
+        mnt = "df -hT";
+        save = "history > history.txt";
       };
 
       initExtra = ''
