@@ -21,6 +21,7 @@
     programs.zoxide = {
       enable = true;
       enableBashIntegration = true;
+      options = [ "--cmd cd" ]; # <--- This tells Zoxide to take over the 'cd' command
     };
 
     programs.bash = {

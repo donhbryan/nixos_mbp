@@ -143,12 +143,12 @@
 
   environment.systemPackages = with pkgs; [
     # System Utilities
-    age autokey bash-completion bitwarden-desktop brave btop cifs-utils
-    conky curl eza fzf geany git multitail nomachine-client oh-my-posh
-    pommed_light proton-pass rclone rclone-browser solaar sops ssh-to-age
-    tealdeer trash-cli tree trilium-desktop wget zoxide
+    age autokey bash-completion bitwarden-desktop brave btop cifs-utils 
+    conky curl eza fzf geany git multitail nomachine-client oh-my-posh 
+    pommed_light proton-pass rclone rclone-browser ripgrep solaar sops 
+    ssh-to-age tealdeer trash-cli tree trilium-desktop wget zoxide 
     kdePackages.plasma-browser-integration
-
+    
     # Media & GUI
     libreoffice-qt-fresh vlc
 
