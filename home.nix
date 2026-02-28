@@ -18,13 +18,18 @@
       };
     };
 
+    programs.direnv = {
+      enable = true;
+      nix-direnv.enable = true;
+    };
+
     programs.zoxide = {
       enable = true;
       enableBashIntegration = true;
       options = [ "--cmd cd" ]; # <--- This tells Zoxide to take over the 'cd' command
     };
 
-    programs.bash = {
+ programs.bash = {
       enable = true;
       enableCompletion = true;
 
@@ -61,18 +66,19 @@
       };
 
       initExtra = ''
-        eval "$(oh-my-posh init bash --config /home/don/.config/oh-my-posh/wopian.omp.json)"
-
-        countfiles() {
-          for t in files links directories; do
-            echo $(find . -type ''${t:0:1} | wc -l) $t;
-          done 2> /dev/null
-        }
-
-        test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+          # Suppress the harmless shopt error from Home Manager's auto-injected bash completion
+          shopt -s progcomp 2>/dev/null || true
+         
+          test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+          
+          # Initialize Oh-My-Posh ABSOLUTELY LAST (and hide it from direnv caching)
+          #if [[ "$DIRENV_IN_ENVRC" != "1" ]]; then
+              #eval "$(oh-my-posh init bash --config /home/don/.config/oh-my-posh/wopianVS.omp.json)"
+          #fi
       '';
     };
-
+    
+    
     programs.eza = {
         enable = true;
         enableBashIntegration = true;

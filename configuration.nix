@@ -144,7 +144,7 @@
   environment.systemPackages = with pkgs; [
     # System Utilities
     age autokey bash-completion bitwarden-desktop brave btop cifs-utils 
-    conky curl eza fzf geany git multitail nomachine-client oh-my-posh 
+    conky curl eza fzf geany git multitail nomachine-client 
     pommed_light proton-pass rclone rclone-browser ripgrep solaar sops 
     ssh-to-age tealdeer trash-cli tree trilium-desktop wget zoxide 
     kdePackages.plasma-browser-integration
@@ -153,14 +153,19 @@
     libreoffice-qt-fresh vlc
 
     # Development & Audio Project
-    vscode-fhs sqlite postgresql ffmpeg chromaprint
+    sqlite postgresql ffmpeg chromaprint vscode
+    direnv  nix-direnv
 
     # Python Environment
     (python3.withPackages (ps: with ps; [
       mutagen pyacoustid requests psycopg2
     ]))
   ];
-
+# Enable direnv integration
+  programs.direnv.enable = true;
+  programs.direnv.nix-direnv.enable = true;
+  
+  
   # ==========================================
   # 7. SYSTEM TIMERS
   # ==========================================
