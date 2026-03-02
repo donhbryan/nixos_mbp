@@ -34,7 +34,7 @@
       enableCompletion = true;
 
       shellAliases = {
-        nix = "sudo nixos-rebuild switch";
+        nix = "sudo nixos-rebuild switch && source ~/.bashrc";
         update = "sudo nixos-rebuild switch";
         rebootsafe = "sudo shutdown -r now";
         rebootforce = "sudo shutdown -r -n now";
@@ -63,6 +63,8 @@
         folders = "du -h --max-depth=1";
         mnt = "df -hT";
         save = "history > history.txt";
+        kdoom = "cd ~/docker-data/compose/doom && docker compose down  && docker compose up -d --force-recreate";
+        doom = "brave --incognito https://127.0.0.1:6901";
       };
 
       initExtra = ''

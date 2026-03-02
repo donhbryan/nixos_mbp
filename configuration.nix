@@ -78,6 +78,10 @@
     LC_TIME = "en_US.UTF-8";
   };
 
+  # Open ports in the firewall.
+   networking.firewall.allowedTCPPorts = [ 9443 6901 ];
+   networking.firewall.allowedUDPPorts = [ 9443  ];
+
   # ==========================================
   # 4. SOPS SECRETS & FILESYSTEMS
   # ==========================================
@@ -111,7 +115,25 @@
   services.printing.enable = true;
   services.openssh.enable = true;
   virtualisation.docker.enable = true;
-
+  
+  # Optionally, enable rootless Docker (more secure, but can be more complex to set up)
+  virtualisation.docker.rootless = {
+    enable = true;
+    setSocketVariable = true;
+  };
+  # store the docker images etc in home direcory
+  virtualisation.docker.daemon.settings = {
+    data-root = "/home/don/docker-data";
+  };
+  virtualisation.docker.daemon.settings = {
+    userland-proxy = false;
+    experimental = true;
+    metrics-addr = "0.0.0.0:9323";
+    ipv6 = true;
+    fixed-cidr-v6 = "fd00::/80";
+  };
+  
+  
   services.avahi = {
     enable = true;
     nssmdns4 = true;
