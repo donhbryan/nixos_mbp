@@ -15,6 +15,7 @@ installed:
     fzf
     geany
     git
+    gzdoom 
     multitail
     nomachine-client
     oh-my-posh
@@ -48,8 +49,9 @@ installed:
     chromaprint # Provides 'fpcalc' needed by pyacoustid
 
 # Python with your specific libraries pre-installed
-    (python3.withPackages (ps: with ps; [
-      mutagen
-      pyacoustid
-      requests
-      psycopg2 # PostgreSQL adapter
+    python3.withPackages  
+    mutagen
+    pyacoustid
+    requests
+    psycopg2 # PostgreSQL adapter
+      

@@ -166,10 +166,10 @@
   environment.systemPackages = with pkgs; [
     # System Utilities
     age autokey bash-completion bitwarden-desktop brave btop cifs-utils 
-    conky curl eza fzf geany git multitail nomachine-client 
+    conky curl eza fzf geany git gzdoom multitail nomachine-client 
     pommed_light proton-pass rclone rclone-browser ripgrep solaar sops 
     ssh-to-age tealdeer trash-cli tree trilium-desktop wget zoxide 
-    kdePackages.plasma-browser-integration
+    kdePackages.plasma-browser-integration 
     
     # Media & GUI
     libreoffice-qt-fresh vlc
