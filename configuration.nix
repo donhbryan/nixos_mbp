@@ -176,7 +176,7 @@
 
     # Development & Audio Project
     sqlite postgresql ffmpeg chromaprint vscode
-    direnv  nix-direnv
+    direnv  nix-direnv dbeaver-bin
 
     # Python Environment
     (python3.withPackages (ps: with ps; [

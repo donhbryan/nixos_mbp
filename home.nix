@@ -75,27 +75,8 @@
           doom = "brave --incognito https://127.0.0.1:6901";
         };
   
-        #initExtra = ''
-            ## Suppress the harmless shopt error from Home Manager's auto-injected bash completion
-            #shopt -s progcomp 2>/dev/null || true
-           
-            #test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-            
-            ## Initialize Oh-My-Posh ABSOLUTELY LAST (and hide it from direnv caching)
-            ##if [[ "$DIRENV_IN_ENVRC" != "1" ]]; then
-                ##eval "$(oh-my-posh init bash --config /home/don/.config/oh-my-posh/wopianVS.omp.json)"
-            ##fi
-        #'';
         initExtra = ''
-          # Initialize Zoxide
-          eval "$(zoxide init bash)"
-          
-          # Initialize Oh-My-Posh
-          # Note: Make sure the path to your JSON is correct!
-          # eval "$(oh-my-posh init bash --config '/home/don/.config/oh-my-posh/wopianVS.omp.json')"
-  
-          # Other custom shell logic
-          test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+		  # shopt -s progcomp 2>/dev/null || true
         '';    
 };
       
