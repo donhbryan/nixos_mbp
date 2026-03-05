@@ -6,9 +6,17 @@
   # ==========================================
   home-manager.users.don = { pkgs, ... }: {
     home.stateVersion = "25.11";
+    
 
     programs.home-manager.enable = true;
 
+    programs.oh-my-posh = {
+        enable = true;
+        enableBashIntegration = true; # This replaces the manual eval in initExtra
+        # Point to your local theme file
+        settings = builtins.fromJSON (builtins.readFile /home/don/.config/oh-my-posh/wopianVS.omp.json);
+      };
+  
     programs.git = {
       enable = true;
       settings = {
@@ -29,62 +37,72 @@
       options = [ "--cmd cd" ]; # <--- This tells Zoxide to take over the 'cd' command
     };
 
- programs.bash = {
-      enable = true;
-      enableCompletion = true;
-
-      shellAliases = {
-        nix = "sudo nixos-rebuild switch && source ~/.bashrc";
-        update = "sudo nixos-rebuild switch";
-        rebootsafe = "sudo shutdown -r now";
-        rebootforce = "sudo shutdown -r -n now";
-        clr = "clear";
-        nano = "sudo nano";
-        docker = "sudo docker";
-        logs = "sudo find /var/log -type f -exec file {} \\; | grep 'text' | cut -d' ' -f1 | sed -e's/:$//g' | grep -v '[0-9]$' | xargs tail -f";
-        systemctl = "sudo systemctl";
-        ".." = "cd ..";
-        "..." = "cd ../..";
-        "cd.." = "cd ..";
-        mkdir = "sudo mkdir -p";
-        cp = "cp -i";
-        mv = "mv -i";
-        rmd = "rm --recursive --force --verbose";
-        ls = "eza -alhM";
-        ll = "eza -alF";
-        la = "eza -A";
-        l = "eza -CF";
-        lf = "eza -l | egrep -v '^d'";
-        ldir = "eza -l | egrep '^d'";
-        tree = "tree -CAhF --dirsfirst";
-        ping = "ping -c 4 -O -w 4";
-        lsblk = "lsblk -o NAME,RM,RO,STATE,SIZE,FSUSE%,FSTYPE,TYPE,UUID,LABEL,PATH,MOUNTPOINTS";
-        diskspace = "du -S | sort -n -r |more";
-        folders = "du -h --max-depth=1";
-        mnt = "df -hT";
-        save = "history > history.txt";
-        kdoom = "cd ~/docker-data/compose/doom && docker compose down  && docker compose up -d --force-recreate";
-        doom = "brave --incognito https://127.0.0.1:6901";
-      };
-
-      initExtra = ''
-          # Suppress the harmless shopt error from Home Manager's auto-injected bash completion
-          shopt -s progcomp 2>/dev/null || true
-         
-          test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    programs.bash = {
+        enable = true;
+        enableCompletion = true;
+  
+        shellAliases = {
+          nix = "sudo nixos-rebuild switch && source ~/.bashrc";
+          update = "sudo nixos-rebuild switch";
+          rebootsafe = "sudo shutdown -r now";
+          rebootforce = "sudo shutdown -r -n now";
+          clr = "clear";
+          nano = "sudo nano";
+          docker = "sudo docker";
+          logs = "sudo find /var/log -type f -exec file {} \\; | grep 'text' | cut -d' ' -f1 | sed -e's/:$//g' | grep -v '[0-9]$' | xargs tail -f";
+          systemctl = "sudo systemctl";
+          ".." = "cd ..";
+          "..." = "cd ../..";
+          "cd.." = "cd ..";
+          mkdir = "sudo mkdir -p";
+          cp = "cp -i";
+          mv = "mv -i";
+          rmd = "rm --recursive --force --verbose";
+          ls = "eza -alhM";
+          ll = "eza -alF";
+          la = "eza -A";
+          l = "eza -CF";
+          lf = "eza -l | egrep -v '^d'";
+          ldir = "eza -l | egrep '^d'";
+          tree = "tree -CAhF --dirsfirst";
+          ping = "ping -c 4 -O -w 4";
+          lsblk = "lsblk -o NAME,RM,RO,STATE,SIZE,FSUSE%,FSTYPE,TYPE,UUID,LABEL,PATH,MOUNTPOINTS";
+          diskspace = "du -S | sort -n -r |more";
+          folders = "du -h --max-depth=1";
+          mnt = "df -hT";
+          save = "history > history.txt";
+          kdoom = "cd ~/docker-data/compose/doom && docker compose down  && docker compose up -d --force-recreate";
+          doom = "brave --incognito https://127.0.0.1:6901";
+        };
+  
+        #initExtra = ''
+            ## Suppress the harmless shopt error from Home Manager's auto-injected bash completion
+            #shopt -s progcomp 2>/dev/null || true
+           
+            #test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+            
+            ## Initialize Oh-My-Posh ABSOLUTELY LAST (and hide it from direnv caching)
+            ##if [[ "$DIRENV_IN_ENVRC" != "1" ]]; then
+                ##eval "$(oh-my-posh init bash --config /home/don/.config/oh-my-posh/wopianVS.omp.json)"
+            ##fi
+        #'';
+        initExtra = ''
+          # Initialize Zoxide
+          eval "$(zoxide init bash)"
           
-          # Initialize Oh-My-Posh ABSOLUTELY LAST (and hide it from direnv caching)
-          #if [[ "$DIRENV_IN_ENVRC" != "1" ]]; then
-              #eval "$(oh-my-posh init bash --config /home/don/.config/oh-my-posh/wopianVS.omp.json)"
-          #fi
-      '';
-    };
-    
-    
+          # Initialize Oh-My-Posh
+          # Note: Make sure the path to your JSON is correct!
+          # eval "$(oh-my-posh init bash --config '/home/don/.config/oh-my-posh/wopianVS.omp.json')"
+  
+          # Other custom shell logic
+          test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+        '';    
+};
+      
     programs.eza = {
         enable = true;
         enableBashIntegration = true;
-    };
+     };     
 
     home.sessionVariables = {
         EZA_COLORS = "da=01;36:sn=32:sb=01;32:uu=35";
@@ -128,5 +146,6 @@
       StartupNotify=false
       X-KDE-autostart-after=panel
     '';
-    };
-  }
+  };
+
+}
