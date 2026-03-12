@@ -46,7 +46,10 @@
     "resume=UUID=7abcfb3a-ccaf-49e1-b3bf-0251e0abedf8"
     "resume_offset=76064768"
   ];
-
+  boot.kernelModules = [
+    "r8152" "asix" "cdc_ether" "usbnet"
+    ];
+    
   # Bluetooth
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = false;
@@ -169,7 +172,7 @@
     conky curl eza fzf geany git gzdoom multitail nomachine-client 
     pommed_light proton-pass rclone rclone-browser ripgrep solaar sops 
     ssh-to-age tealdeer trash-cli tree trilium-desktop wget zoxide 
-    kdePackages.plasma-browser-integration 
+    kdePackages.plasma-browser-integration usbutils
     
     # Media & GUI
     libreoffice-qt-fresh vlc
