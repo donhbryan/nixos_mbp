@@ -172,7 +172,7 @@
     conky curl eza fzf geany git gzdoom multitail nomachine-client 
     pommed_light proton-pass rclone rclone-browser ripgrep solaar sops 
     ssh-to-age tealdeer trash-cli tree trilium-desktop wget zoxide 
-    kdePackages.plasma-browser-integration usbutils
+    kdePackages.plasma-browser-integration usbutils iperf fsearch
     
     # Media & GUI
     libreoffice-qt-fresh vlc
