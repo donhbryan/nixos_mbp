@@ -157,7 +157,7 @@
   users.users.don = {
     isNormalUser = true;
     description = "don";
-    extraGroups = [ "networkmanager" "wheel" "docker" ];
+    extraGroups = [ "networkmanager" "wheel" "docker"  "adbusers" ];
   };
 
   programs.firefox.enable = true;
@@ -173,6 +173,7 @@
     pommed_light proton-pass rclone rclone-browser ripgrep solaar sops 
     ssh-to-age tealdeer trash-cli tree trilium-desktop wget zoxide 
     kdePackages.plasma-browser-integration usbutils iperf fsearch
+    bash android-tools unzip
     
     # Media & GUI
     libreoffice-qt-fresh vlc
@@ -186,10 +187,14 @@
       mutagen pyacoustid requests psycopg2
     ]))
   ];
-# Enable direnv integration
+  # Enable direnv integration
   programs.direnv.enable = true;
   programs.direnv.nix-direnv.enable = true;
-  
+  # Enable ADB and Fastboot
+  programs.adb.enable = true;
+
+  #  Add yourself to the group (replace 'yourusername')
+
   
   # ==========================================
   # 7. SYSTEM TIMERS
