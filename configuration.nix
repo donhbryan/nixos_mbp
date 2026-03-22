@@ -101,17 +101,29 @@
     password=${config.sops.placeholder."smb_password"}
     domain=${config.sops.placeholder."smb_domain"}
   '';
+  
+  fileSystems = {
+	"/mnt/win-share" = {
+    device = "//192.168.1.2/folder";
+    fsType = "cifs";
+    options = let
+      # Keep credentials in a separate file for security
+      automount_opts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
+    in ["${automount_opts},username=donhb,password=@Admin1234,uid=1000,gid=100"];
+  };
 
-  fileSystems."/mnt/NAS" = {
+
+	"/mnt/NAS" ={
     device = "//192.168.1.4/NAS";
     fsType = "cifs";
     options = [
       "x-systemd.automount"
       "noauto"
       "credentials=${config.sops.templates."smb-secrets.conf".path}"
-    ];
+      ];
+    };
   };
-
+  
   # ==========================================
   # 5. SERVICES & DISCOVERY
   # ==========================================
@@ -127,8 +139,6 @@
   # store the docker images etc in home direcory
   virtualisation.docker.daemon.settings = {
     data-root = "/home/don/docker-data";
-  };
-  virtualisation.docker.daemon.settings = {
     userland-proxy = false;
     experimental = true;
     metrics-addr = "0.0.0.0:9323";
@@ -136,16 +146,37 @@
     fixed-cidr-v6 = "fd00::/80";
   };
   
-  
   services.avahi = {
-    enable = true;
-    nssmdns4 = true;
-    openFirewall = true;
+  enable = true;
+  nssmdns4 = true;
+  openFirewall = true;
+  publish.enable = true;
+  publish.addresses = true;
   };
+
   services.samba = {
-    enable = true;
-    openFirewall = true;
+  enable = true;
+  openFirewall = true;
+  settings = {
+    global = {
+      "workgroup" = "WORKGROUP";
+      "server string" = "NixOS";
+      "netbios name" = "nixos";
+      "security" = "user";
+      # Use "map to guest = bad user" to allow guest access, 
+      # otherwise you must define users
+    };
+    share = {
+      "path" = "/home/don/shared";
+      "browseable" = "yes";
+      "read only" = "no";
+      "guest ok" = "yes";
+      "create mask" = "0644";
+      "directory mask" = "0755";
+      };
+    };
   };
+
   services.samba-wsdd = {
     enable = true;
     openFirewall = true;
@@ -173,7 +204,7 @@
     pommed_light proton-pass rclone rclone-browser ripgrep solaar sops 
     ssh-to-age tealdeer trash-cli tree trilium-desktop wget zoxide 
     kdePackages.plasma-browser-integration usbutils iperf fsearch
-    bash android-tools unzip
+    bash android-tools unzip wakeonlan
     
     # Media & GUI
     libreoffice-qt-fresh vlc
