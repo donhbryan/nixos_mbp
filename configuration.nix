@@ -181,7 +181,21 @@
     enable = true;
     openFirewall = true;
   };
-
+#    services.nfs.server = {
+#      enable = true;
+#      exportedDirectories = {
+#        "/home/don/Documents" = {
+#          clients = [ "192.168.1.0/24" ];
+#          options = [ "rw" "no_root_squash" ];
+#        };
+#      };
+#    };   
+  
+#   fileSystems."/mnt/win-share" = {
+#   device = "192.168.1.3:/data";
+#   fsType = "nfs";
+#   options = [ "x-systemd.automount" "noauto" ];
+# };   
   # ==========================================
   # 6. USERS & SYSTEM PACKAGES
   # ==========================================
@@ -204,7 +218,8 @@
     pommed_light proton-pass rclone rclone-browser ripgrep solaar sops 
     ssh-to-age tealdeer trash-cli tree trilium-desktop wget zoxide 
     kdePackages.plasma-browser-integration usbutils iperf fsearch
-    bash android-tools unzip wakeonlan
+    bash android-tools unzip wakeonlan 
+    rsync zeroad-unwrapped zeroad-data
     
     # Media & GUI
     libreoffice-qt-fresh vlc
