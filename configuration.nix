@@ -20,6 +20,7 @@
   # 1. CORE SYSTEM & NIX SETTINGS
   # ==========================================
   system.stateVersion = "25.11";
+  system.autoUpgrade.enable = true;
 
   nix.optimise.automatic = true;
   nix.gc = {
