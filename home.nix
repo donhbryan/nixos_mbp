@@ -9,6 +9,22 @@
     
 
     programs.home-manager.enable = true;
+    
+    programs.brave = {
+		enable = true;
+		extensions = [
+			{ id = "nngceckbapebfimnlniiiahkandclblb"; } # Bitwarden
+		];
+	# This section controls the browser policies
+		commandLineArgs = [
+			"--restore-last-session"
+		];
+	};
+
+	# Alternatively, the most robust way via Policies:
+		home.file.".config/brave-browser/Policies/managed_policies.json".text = builtins.toJSON {
+		"RestoreOnStartup" = 1; # 1 = Restore the last session
+		};
 
     programs.oh-my-posh = {
         enable = true;

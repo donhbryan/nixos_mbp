@@ -220,7 +220,8 @@
     ssh-to-age tealdeer trash-cli tree trilium-desktop wget zoxide 
     kdePackages.plasma-browser-integration usbutils iperf fsearch
     bash android-tools unzip wakeonlan 
-    rsync zeroad-unwrapped zeroad-data
+    rsync zeroad-unwrapped zeroad-data proton-pass
+    proton-authenticator
     
     # Media & GUI
     libreoffice-qt-fresh vlc
