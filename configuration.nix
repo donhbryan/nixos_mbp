@@ -4,8 +4,15 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
 { config, pkgs, ... }:
-
 {
+  # Enable the libvirtd daemon
+  virtualisation.libvirtd.enable = true;
+
+  # Enable virt-manager (the GUI)
+  programs.virt-manager.enable = true;
+
+
+
   imports = [
     ./hardware-configuration.nix
     <home-manager/nixos>
@@ -203,7 +210,7 @@
   users.users.don = {
     isNormalUser = true;
     description = "don";
-    extraGroups = [ "networkmanager" "wheel" "docker"  "adbusers" ];
+    extraGroups = [ "networkmanager" "libvirtd" "wheel" "docker"  "adbusers" ];
   };
 
   programs.firefox.enable = true;
@@ -223,12 +230,16 @@
     rsync zeroad-unwrapped zeroad-data proton-pass
     proton-authenticator
     
+    # AI 
+    gemini-cli opencode
     # Media & GUI
-    libreoffice-qt-fresh vlc
-
+    #libreoffice-qt-fresh 
+    onlyoffice-documentserver vlc
+ 
     # Development & Audio Project
     sqlite postgresql ffmpeg chromaprint vscode
     direnv  nix-direnv dbeaver-bin
+    
 
     # Python Environment
     (python3.withPackages (ps: with ps; [
@@ -267,5 +278,24 @@
       Persistent = true;
     };
   };
+	systemd.services.nixos-backup = {
+	  description = "Backup NixOS Config to NAS";
+	  serviceConfig = {
+		Type = "oneshot";
+		# Ensure the NAS is mounted before running
+		ExecStart = "${pkgs.rsync}/bin/rsync -avz --delete /etc/nixos/*.nix //borg/mnt/NAS/NixOs_Backup/";
+		User = "root";
+	  };
+	};
+
+	systemd.timers.nixos-backup = {
+	  wantedBy = [ "timers.target" ];
+	  timerConfig = {
+		OnCalendar = "daily"; # Runs every day at midnight
+		Persistent = true;     # Runs immediately if the last scheduled time was missed
+		Unit = "nixos-backup.service";
+	  };
+	};
+	
 
 }
