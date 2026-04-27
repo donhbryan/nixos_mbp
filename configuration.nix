@@ -4,6 +4,7 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
 { config, pkgs, ... }:
+	
 {
   # Enable the libvirtd daemon
   virtualisation.libvirtd.enable = true;
@@ -37,9 +38,9 @@
   };
 
   nixpkgs.config.allowUnfree = true;
-  nixpkgs.config.permittedInsecurePackages = [
-    "broadcom-sta-6.30.223.271-59-6.12.74"
-  ];
+  #nixpkgs.config.permittedInsecurePackages = [
+    #"broadcom-sta-6.30.223.271-59-6.12.82"
+  #];
 
   # ==========================================
   # 2. BOOT, KERNEL & HARDWARE
@@ -222,13 +223,14 @@
   environment.systemPackages = with pkgs; [
     # System Utilities
     age autokey bash-completion bitwarden-desktop brave btop cifs-utils 
-    conky cups curl eza fzf geany git gzdoom multitail nomachine-client 
+    conky cups curl eza fzf geany git gzdoom multitail 
+    nomachine-client 
     pommed_light proton-pass rclone rclone-browser ripgrep solaar sops 
     ssh-to-age tealdeer trash-cli tree trilium-desktop wget zoxide 
     kdePackages.plasma-browser-integration usbutils iperf fsearch
     bash android-tools unzip wakeonlan 
     rsync zeroad-unwrapped zeroad-data proton-pass
-    proton-authenticator
+    proton-authenticator resources
     
     # AI 
     gemini-cli opencode
