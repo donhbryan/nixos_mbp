@@ -34,14 +34,17 @@
   nix.gc = {
     automatic = true;
     dates = "weekly";
-    options = "--delete-older-than 14d";
+    options = "--delete-older-than 31d";
   };
 
   nixpkgs.config.allowUnfree = true;
   #nixpkgs.config.permittedInsecurePackages = [
     #"broadcom-sta-6.30.223.271-59-6.12.82"
   #];
-
+  nixpkgs.config.permittedInsecurePackages = [
+      "broadcom-sta-6.30.223.271-59-6.12.85"
+    ];
+    
   # ==========================================
   # 2. BOOT, KERNEL & HARDWARE
   # ==========================================
@@ -190,6 +193,19 @@
     enable = true;
     openFirewall = true;
   };
+  # In configuration.nix
+  #services.restic.backups = {
+    #home = {
+      #paths = [ "/home/don" ];
+      #exclude = [ "/home/don/.cache" ];
+      #repository = "/run/media/don/USB DISK/NixOs Home/";
+      #timerConfig = {
+        #OnCalendar = "daily";
+        #Persistent = true;
+      #};
+    #};
+  #};
+
 #    services.nfs.server = {
 #      enable = true;
 #      exportedDirectories = {
